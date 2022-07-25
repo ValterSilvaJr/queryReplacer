@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+      padding: 0;
+      text-decoration: none;
+    }
+    div {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #checkout_link {
+      border: solid 1px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <a id="checkout_link" href="http://localhost:3000/?utm_medium=123&utm_content=ORIGINAL_VALUE">Clique aqui</a>
+  </div>
+</body>
+<script>
+  (function getURL(){
+    function getQuery(queryName){
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      return urlParams.get(queryName);
+    }
+
+    let link = document.querySelector("#checkout_link")
+
+    if(link){
+      const fields = [
+        {
+          name: 'utm_source',
+          value: getQuery("utm_source"),
+        },
+        {
+          name: 'utm_content',
+          value: getQuery("utm_content"),
+        },
+        {
+          name: 'product',
+          value: getQuery("product"),
+        },
+        {
+          name: 'seller',
+          value: getQuery("seller"),
+        },
+        {
+          name: 'category',
+          value: getQuery("category"),
+        },
+        {
+          name: 'type',
+          value: getQuery("type"),
+        }
+      ]
+      
+      for(let i = 0; i < fields.length; i++) {
+        let existentQueryValue = null;
+        if(fields[i].value){
+          if(link.href.includes(fields[i].name)){
+            existentQueryValue = link.href.split(`${fields[i].name}`)
+            existentQueryValue = existentQueryValue[1].split("&")[0].replace("=", '')
+          }
+          link.href = link.href.concat(`${i === 0 && !link.href.includes('?') ? '/?' : '&'}${existentQueryValue ? `${fields[i].name}=${existentQueryValue}` : `${fields[i].name}=${fields[i].value}`}`)
+        }
+      }
+  
+      link.href = link.href
+    }
+  })()
+</script>
+</html>
